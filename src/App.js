@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useState, useEffect } from 'react';
 import {db} from './firebase-config';
-import {addDoc, collection, getDocs, updateDoc,doc} from 'firebase/firestore';
+import {addDoc, collection, getDocs, updateDoc,doc, deleteDoc} from 'firebase/firestore';
 
 
 function App() {
@@ -18,6 +18,10 @@ function App() {
     const newName = {name:getNewName};
     await updateDoc(userDoc, newName);
   }
+  const deleteUser = async(id) => {
+    const userDoc = doc(db,"users",id);
+    await deleteDoc(userDoc);
+  }
 
   useEffect(()=>{
     const getUsers = async()=>{
@@ -30,7 +34,7 @@ function App() {
     <div className="App">
       <input placeholder='Name...' onChange={(event)=>{setNewName(event.target.value)}}></input>
       <button onClick={createUser}>Submit</button>
-      {users.map((user)=>{return <div><h1 key={user.id}>Name:{user.name}</h1> <button onClick={()=>{editUser(user.id)}}>Edit</button></div>})}
+      {users.map((user)=>{return <div><h1 key={user.id}>Name:{user.name}</h1> <button onClick={()=>{editUser(user.id)}}>Edit</button> <button onClick={()=>{deleteUser(user.id)}}>Delete</button></div>})}
     </div>
   );
 }
